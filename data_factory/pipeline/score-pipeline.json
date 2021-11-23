@@ -79,6 +79,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"command": ".show tables",
 					"commandTimeout": "00:20:00"
 				},
 				"linkedServiceName": {
