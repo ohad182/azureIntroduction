@@ -80,6 +80,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"commandTimeout": "00:20:00"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDataExplorer1",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
