@@ -5,7 +5,7 @@
 		"type": "AzureDataExplorer",
 		"typeProperties": {
 			"endpoint": "https://machinescluster.westeurope.kusto.windows.net",
-			"database": "machine_highest_scores"
+			"database": "machines_highest_scores"
 		}
 	}
 }
