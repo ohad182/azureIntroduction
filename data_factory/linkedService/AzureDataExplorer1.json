@@ -5,6 +5,16 @@
 		"type": "AzureDataExplorer",
 		"typeProperties": {
 			"endpoint": "https://machinescluster.westeurope.kusto.windows.net",
+			"tenant": "d8f2b0bc-f449-40d9-b785-a2fa8bb62be3",
+			"servicePrincipalId": "noideawhattowritehere",
+			"servicePrincipalKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "default"
+			},
 			"database": "machine_highest_scores"
 		}
 	}
