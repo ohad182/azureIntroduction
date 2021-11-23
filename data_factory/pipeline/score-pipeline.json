@@ -17,11 +17,13 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT * FROM [dbo].[MachineScoreEvents] c\nWHERE [MachineId] in \n    (SELECT\n      [MachineId]\n    FROM [dbo].[MachineScoreEvents] b\n    INNER JOIN (SELECT \n                  [MachineGroup], MAX([Score]) AS group_max_score\n                FROM [dbo].[MachineScoreEvents]\n                GROUP BY [MachineGroup]) a ON \n      a.MachineGroup = b.MachineGroup AND a.group_max_score = b.Score) \n\t  ORDER BY [MachineGroup]",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"sink": {
 						"type": "AzureSqlSink",
+						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
@@ -62,6 +64,22 @@
 				"linkedServiceName": {
 					"referenceName": "azure_score_db",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Azure Data Explorer Command1",
+				"type": "AzureDataExplorerCommand",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"commandTimeout": "00:20:00"
 				}
 			}
 		],
