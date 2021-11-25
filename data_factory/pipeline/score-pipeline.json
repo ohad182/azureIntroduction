@@ -3,11 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Store Max Scores on ADX",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
-					"timeout": "7.00:00:00",
+					"timeout": "0.00:10:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
@@ -36,7 +36,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "AzureScoreDB",
 						"type": "DatasetReference"
 					}
 				],
@@ -52,7 +52,7 @@
 				"type": "AzureDataExplorerCommand",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "Store Max Scores on ADX",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -74,6 +74,50 @@
 					"referenceName": "AzureDataExplorer1",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "Store max scores on SQL",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureDataExplorerSource",
+						"query": "scores",
+						"queryTimeout": "00:10:00"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureDataExplorerTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureScoreDB",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"annotations": []
