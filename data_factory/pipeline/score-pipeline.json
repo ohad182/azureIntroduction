@@ -94,7 +94,8 @@
 						"queryTimeout": "00:10:00"
 					},
 					"sink": {
-						"type": "AzureSqlSink"
+						"type": "AzureSqlSink",
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
 					"translator": {
@@ -114,7 +115,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureScoreDB",
+						"referenceName": "AzureMaxScoreDB",
 						"type": "DatasetReference"
 					}
 				]
