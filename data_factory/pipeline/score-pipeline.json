@@ -81,6 +81,7 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
+						"preCopyScript": "TRUNCATE TABLE [dbo].[MaxScoreEvents];",
 						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
 					},
