@@ -1,0 +1,42 @@
+{
+	"name": "AzureMaxScoreDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "azure_score_db",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "EventId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "MachineId",
+				"type": "uniqueidentifier"
+			},
+			{
+				"name": "Score",
+				"type": "decimal",
+				"precision": 5,
+				"scale": 2
+			},
+			{
+				"name": "MachineGroup",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "ReportTime",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "MaxScoreEvents"
+		}
+	}
+}
