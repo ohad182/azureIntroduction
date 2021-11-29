@@ -24,7 +24,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT * FROM [dbo].[MachineScoreEvents] c\nWHERE [MachineId] in \n    (SELECT\n      [MachineId]\n    FROM [dbo].[MachineScoreEvents] b\n    INNER JOIN (SELECT \n                  [MachineGroup], MAX([Score]) AS group_max_score\n                FROM [dbo].[MachineScoreEvents]\n                GROUP BY [MachineGroup]) a ON \n      a.MachineGroup = b.MachineGroup AND a.group_max_score = b.Score) \n\t  ORDER BY [MachineGroup]",
+						"sqlReaderQuery": "SELECT * FROM [dbo].[MachineScoreEvents] c\nWHERE [MachineId] in \n    (SELECT\n      [MachineId]\n    FROM [dbo].[MachineScoreEvents] b\n    INNER JOIN (SELECT \n                  [MachineGroup], MAX([Score]) AS group_max_score\n                FROM [dbo].[MachineScoreEvents] WHERE [ReportTime] NOT IN (SELECT [ReportTime] FROM [dbo].[MaxScoreEvents])\n                GROUP BY [MachineGroup]) a ON \n      a.MachineGroup = b.MachineGroup AND a.group_max_score = b.Score) \n\t  ORDER BY [MachineGroup]",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
