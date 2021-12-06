@@ -113,25 +113,6 @@ items_per_thread = 100
 groups = [get_random_smallint() for i in range(100)]
 config = get_config()
 
-
-# with pyodbc.connect(
-#         'DRIVER=' + config['driver'] + ';SERVER=tcp:' + config['server'] + ';PORT=1433;DATABASE=' + config[
-#             'database'] + ';UID=' + config['username'] + ';PWD=' + config['password']) as conn:
-#     conn.add_output_converter(pyodbc.SQL_TYPE_TIMESTAMP, handle_datetime2)
-#     with conn.cursor() as cursor:
-#         create_table(cursor)
-#         drop_table(cursor)
-#         cursor.fast_executemany = True
-#         for i in range(items_to_populate):
-#             group = groups[int(get_random_number(0, 99, 0))]
-#             cursor.execute(
-#                 "INSERT INTO MachineScoreEvents (MachineId,Score,MachineGroup,ReportTime) values(?,?,?,?)",
-#                 uuid.uuid4(), get_random_number(), group, get_random_time())
-#             if i > 0 and i % 1000 == 0:
-#                 logger.debug(f"Committing {i}/{items_to_populate}")
-#                 cursor.commit()
-#         cursor.commit()
-
 def main():
     try:
         reset_table()
