@@ -10,8 +10,8 @@ from datetime import datetime, timedelta
 
 
 def get_config(config_file_path="config.json"):
-    with open(config_file_path, "r") as config:
-        return json.loads(config.read())
+    with open(config_file_path, "r") as conf:
+        return json.loads(conf.read())
 
 
 def get_random_number(min_value=0, max_value=100, decimal_points=2):
