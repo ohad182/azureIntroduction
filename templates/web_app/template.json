@@ -1,0 +1,222 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "hostingPlanName": {
+            "type": "string"
+        },
+        "serverFarmResourceGroup": {
+            "type": "string"
+        },
+        "databaseName": {
+            "type": "string"
+        },
+        "sku": {
+            "type": "string"
+        },
+        "skuCode": {
+            "type": "string"
+        },
+        "workerSize": {
+            "type": "string"
+        },
+        "workerSizeId": {
+            "type": "string"
+        },
+        "numberOfWorkers": {
+            "type": "string"
+        },
+        "linuxFxVersion": {
+            "type": "string"
+        },
+        "storageSizeMB": {
+            "type": "int"
+        },
+        "haEnabled": {
+            "type": "string"
+        },
+        "availabilityZone": {
+            "type": "string"
+        },
+        "backupRetentionDays": {
+            "type": "int"
+        },
+        "geoRedundantBackup": {
+            "type": "string"
+        },
+        "vmName": {
+            "type": "string"
+        },
+        "storageAutogrow": {
+            "type": "string"
+        },
+        "storageIops": {
+            "type": "int"
+        },
+        "publicNetworkAccess": {
+            "type": "string"
+        },
+        "vnetData": {
+            "type": "object"
+        },
+        "infrastructureEncryption": {
+            "type": "string"
+        },
+        "serverEdition": {
+            "type": "string"
+        },
+        "vCores": {
+            "type": "int"
+        },
+        "serverName": {
+            "type": "string"
+        },
+        "serverUsername": {
+            "type": "string"
+        },
+        "serverPassword": {
+            "type": "securestring"
+        }
+    },
+    "resources": [
+        {
+            "condition": "[or(parameters('vnetData').isNewVnet, parameters('vnetData').subnetNeedsUpdate)]",
+            "name": "[variables('networkResourcesDeploymentName')]",
+            "type": "Microsoft.Resources/deployments",
+            "location": "[parameters('location')]",
+            "apiVersion": "2020-06-01",
+            "resourceGroup": "[parameters('vnetData').virtualNetworkResourceGroupName]",
+            "subscriptionId": "[parameters('vnetData').subscriptionId]",
+            "resources": [
+                {
+                    "dependsOn": [
+                        "[concat('Microsoft.Resources/deployments', '/', variables('networkResourcesDeploymentName'))]"
+                    ],
+                    "condition": "[parameters('vnetData').subnetNeedsUpdate]",
+                    "type": "Microsoft.Network/virtualNetworks/subnets",
+                    "name": "[concat(parameters('vnetData').virtualNetworkName, '/', parameters('vnetData').subnetName)]",
+                    "apiVersion": "2020-05-01",
+                    "properties": "[parameters('vnetData').subnetProperties]"
+                },
+                {
+                    "dependsOn": [
+                        "[concat('Microsoft.Resources/deployments', '/', variables('networkResourcesDeploymentName'))]"
+                    ],
+                    "condition": "[parameters('vnetData').isNewVnet]",
+                    "type": "Microsoft.Network/virtualNetworks",
+                    "name": "[parameters('vnetData').virtualNetworkName]",
+                    "apiVersion": "2020-05-01",
+                    "location": "[parameters('vnetData').location]",
+                    "tags": {},
+                    "properties": {
+                        "addressSpace": {
+                            "addressPrefixes": [
+                                "[parameters('vnetData').virtualNetworkAddressPrefix]"
+                            ]
+                        },
+                        "subnets": [
+                            {
+                                "name": "[parameters('vnetData').subnetName]",
+                                "properties": "[parameters('vnetData').subnetProperties]"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "[variables('api')]",
+            "location": "[parameters('location')]",
+            "name": "[parameters('serverName')]",
+            "type": "Microsoft.DBforMySQL/flexibleServers",
+            "tags": null,
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments', '/', variables('networkResourcesDeploymentName'))]"
+            ],
+            "properties": {
+                "version": "[variables('version')]",
+                "administratorLogin": "[parameters('serverUsername')]",
+                "administratorLoginPassword": "[parameters('serverPassword')]",
+                "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+                "DelegatedSubnetArguments": "[if(empty(parameters('vnetData').delegatedSubnetArguments), json('null'), parameters('vnetData').delegatedSubnetArguments)]",
+                "haEnabled": "[parameters('haEnabled')]",
+                "storageProfile": {
+                    "storageMB": "[parameters('storageSizeMB')]",
+                    "backupRetentionDays": "[parameters('backupRetentionDays')]",
+                    "geoRedundantBackup": "[parameters('geoRedundantBackup')]",
+                    "storageIops": "[parameters('storageIops')]",
+                    "storageAutogrow": "[parameters('storageAutogrow')]"
+                },
+                "availabilityZone": "[parameters('availabilityZone')]",
+                "dataencryption": {
+                    "infrastructureEncryption": "[parameters('infrastructureEncryption')]"
+                }
+            },
+            "sku": {
+                "name": "[parameters('vmName')]",
+                "tier": "[parameters('serverEdition')]",
+                "capacity": "[parameters('vCores')]"
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('location')]",
+            "kind": "linux",
+            "tags": null,
+            "properties": {
+                "name": "[parameters('hostingPlanName')]",
+                "workerSize": "[parameters('workerSize')]",
+                "workerSizeId": "[parameters('workerSizeId')]",
+                "numberOfWorkers": "[parameters('numberOfWorkers')]",
+                "reserved": true
+            },
+            "sku": {
+                "Tier": "[parameters('sku')]",
+                "Name": "[parameters('skuCode')]"
+            }
+        },
+        {
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('name')]",
+            "type": "Microsoft.Web/sites",
+            "location": "[parameters('location')]",
+            "tags": null,
+            "dependsOn": [
+                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "[concat('Microsoft.DBforMySQL/flexibleServers/', parameters('serverName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('name')]",
+                "siteConfig": {
+                    "linuxFxVersion": "[parameters('linuxFxVersion')]",
+                    "connectionStrings": [
+                        {
+                            "name": "defaultConnection",
+                            "ConnectionString": "[concat('Database=mysql;Server=','ohadc-app-server.mysql.database.azure.com',';User Id=',parameters('serverUsername'),'@','ohadc-app-server.mysql.database.azure.com',';Password=',parameters('serverPassword'))]",
+                            "type": "MySQL"
+                        }
+                    ],
+                    "appSettings": []
+                },
+                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "clientAffinityEnabled": false
+            }
+        }
+    ],
+    "variables": {
+        "api": "2020-07-01-privatepreview",
+        "version": "5.7",
+        "networkResourcesDeploymentName": "NetworkResourceDeploymentForDatabase"
+    }
+}

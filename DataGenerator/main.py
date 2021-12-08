@@ -106,18 +106,10 @@ def add_records(thread_number):
     connection.close()
 
 
-logger = get_logger()
-num_of_threads = 20
-items_to_populate = 1000000
-items_per_thread = 100
-groups = [get_random_smallint() for i in range(100)]
-config = get_config()
-
 def main():
     try:
         reset_table()
 
-        # add_records(cursor, 1000, groups)
         with ThreadPoolExecutor(max_workers=num_of_threads) as executor:
             threads_count = int(items_to_populate / items_per_thread)
             print(f"Should run {threads_count} threads")
@@ -131,4 +123,11 @@ def main():
 
 
 if __name__ == '__main__':
+    logger = get_logger()
+    num_of_threads = 30
+    items_to_populate = 1000000
+    items_per_thread = 100
+    groups = [get_random_smallint() for i in range(100)]
+    config = get_config()
+
     main()

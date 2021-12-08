@@ -1,0 +1,11 @@
+{
+  "id": "/subscriptions/7136b7f3-288c-407b-beb2-d399c3d55647/resourceGroups/azcli-resource-group",
+  "location": "westeurope",
+  "managedBy": null,
+  "name": "azcli-resource-group",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}

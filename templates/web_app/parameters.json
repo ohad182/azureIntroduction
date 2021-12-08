@@ -1,0 +1,101 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "value": "7136b7f3-288c-407b-beb2-d399c3d55647"
+        },
+        "name": {
+            "value": "ohadc-app"
+        },
+        "location": {
+            "value": "West Europe"
+        },
+        "hostingPlanName": {
+            "value": "ASP-webapp-a246"
+        },
+        "serverFarmResourceGroup": {
+            "value": "web-app"
+        },
+        "databaseName": {
+            "value": "ohadc-app-database"
+        },
+        "sku": {
+            "value": "PremiumV2"
+        },
+        "skuCode": {
+            "value": "P1v2"
+        },
+        "workerSize": {
+            "value": ""
+        },
+        "workerSizeId": {
+            "value": ""
+        },
+        "numberOfWorkers": {
+            "value": "1"
+        },
+        "linuxFxVersion": {
+            "value": "PYTHON|3.8"
+        },
+        "storageSizeMB": {
+            "value": 20480
+        },
+        "haEnabled": {
+            "value": "Disabled"
+        },
+        "availabilityZone": {
+            "value": ""
+        },
+        "backupRetentionDays": {
+            "value": 7
+        },
+        "geoRedundantBackup": {
+            "value": "Disabled"
+        },
+        "vmName": {
+            "value": "Standard_B1ms"
+        },
+        "vCores": {
+            "value": 4
+        },
+        "storageAutogrow": {
+            "value": "Enabled"
+        },
+        "storageIops": {
+            "value": 360
+        },
+        "publicNetworkAccess": {
+            "value": "Enabled"
+        },
+        "infrastructureEncryption": {
+            "value": "Disabled"
+        },
+        "serverName": {
+            "value": "ohadc-app-server"
+        },
+        "serverUsername": {
+            "value": "shjizgjamj"
+        },
+        "serverPassword": {
+            "value": null
+        },
+        "vnetData": {
+            "value": {
+                "virtualNetworkName": "testVnet",
+                "subnetName": "testSubnet",
+                "virtualNetworkAddressPrefix": "10.0.0.0/16",
+                "virtualNetworkResourceGroupName": "web-app",
+                "location": "eastus2",
+                "subscriptionId": "7136b7f3-288c-407b-beb2-d399c3d55647",
+                "subnetProperties": {},
+                "delegatedSubnetArguments": {},
+                "isNewVnet": false,
+                "subnetNeedsUpdate": false
+            }
+        },
+        "serverEdition": {
+            "value": "Burstable"
+        }
+    }
+}
