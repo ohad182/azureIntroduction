@@ -1,37 +1,42 @@
-#!/bin/bash 
-
+resource_group="web-app"
 location="westeurope"
-resource_group="azcli-resource-group"
+appName="ohadc-app"
+planName="ohadc-web-app-service-plan"
+sqlServerName="web-app-sql-srv-ohadc"
+sqlDatabaseName="web-app-sql-db-ohadc"
+sqlServerUsername="db_admin"
+sqlServerPassword="db_Password!"
+git_repo="https://github.com/ohad182/azureIntroduction"
+branch="web-app"
 
-# database variables
-server="sql-srv-azcli"
-database="sql-db-azcli"
-login="db_admin"
-password="db_Password!"
-# startIP=10.5.45.0
-# endIP=10.5.45.255
-startIP=192.168.1.0
-endIP=192.168.1.255
 
-# add if exist delete
 echo "Deleting resource group $resource_group..."
 az group delete -n $resource_group --yes
 
 echo "Creating resource group $resource_group..."
-az group create --name $resource_group --location "$location"
+az group create -n $resource_group -l $location
 
-echo "Creating $server in $location..."
-az sql server create --name $server --resource-group $resource_group --location "$location" --admin-user $login --admin-password $password
+# create the app service plan
+# allowed sku values B1, B2, B3, D1, F1, FREE, P1, P1V2, P2, P2V2, P3, P3V2, S1, S2, S3, SHARED.
+echo "Creating service plan  $planName..."
+az appservice plan create -n $planName -g $resource_group -l $location --sku B1
+
+echo "Creating the web app..."
+az webapp create -n $appName -g $resource_group --plan $planName
+
+az webapp deployment source config -n $appName -g $resource_group \
+    --repo-url $git_repo --branch $branch --manual-integration
+
+az sql server create -n $sqlServerName -g $resource_group \
+            -l $location -u $sqlServerUsername -p $sqlServerPassword
+
+echo "Creating the database..."
+az sql db create -g $resource_group -s $sqlServerName -n $sqlDatabaseName --service-objective Basic
+
+az webapp show -n $appName -g $resource_group --query "outboundIpAddresses" -o tsv
 
 echo "Configuring firewall..."
-az sql server firewall-rule create --resource-group $resource_group --server $server -n AllowYourIp --start-ip-address $startIP --end-ip-address $endIP
+az sql server firewall-rule create -g $resource_group -s $sqlServerName -n AllowWebAppDemo --start-ip-address 192.168.1.0 --end-ip-address 192.168.1.255
 
-echo "Creating $database on $server..."
-az sql db create --resource-group $resource_group --server $server --name $database --edition GeneralPurpose --family Gen5 --capacity 2 
-
-echo "Creating storage account..."
-az storage account create -–name azcli-storage --resource-group $resource_group --location "$location" --sku Standard_ZRS --encryption-services blob
-
-# create deployment 
-echo "Deploying..."
-az deployment group create --name machines-deployment --resource-group azcli-resource-group --template-file machines-score-template.json
+connectionString="Server=tcp:$sqlServerName.database.windows.net;Database=$sqlDatabaseName;User ID=$sqlServerUsername@$sqlServerName;Password=$sqlServerPassword;Trusted_Connection=False;Encrypt=True;"
+echo "$connectionString"

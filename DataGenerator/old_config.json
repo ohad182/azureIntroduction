@@ -1,8 +1,0 @@
-{
-  "server": "machines-db-server.database.windows.net",
-  "database": "machines-db-demo",
-  "table": "MachineScoreEvents",
-  "username": "demo_admin",
-  "password": "piEizoSysma!",
-  "driver": "{ODBC Driver 17 for SQL Server}"
-}
