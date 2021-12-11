@@ -1,0 +1,27 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "type": "string"
+        },
+        "sku": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2020-06-10",
+            "name": "[parameters('name')]",
+            "location": "global",
+            "type": "Microsoft.Bing/accounts",
+            "kind": "Bing.Search.v7",
+            "sku": {
+                "name": "[parameters('sku')]"
+            },
+            "properties": {
+                "statisticsEnabled": false
+            }
+        }
+    ]
+}

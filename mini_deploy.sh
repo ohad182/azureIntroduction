@@ -13,28 +13,7 @@ branch="web-app"
 echo "Deleting resource group $resource_group..."
 az group delete -n $resource_group --yes
 
-echo "Creating resource group $resource_group..."
-az group create -n $resource_group -l $location
-
-# create the app service plan
-# allowed sku values B1, B2, B3, D1, F1, FREE, P1, P1V2, P2, P2V2, P3, P3V2, S1, S2, S3, SHARED.
-echo "Creating service plan  $planName..."
-az appservice plan create -n $planName -g $resource_group -l $location --sku B1
-
-echo "Creating the web app..."
-az webapp create -n $appName -g $resource_group --plan $planName
-
-#az webapp deployment source config -n $appName -g $resource_group \
-#    --repo-url $git_repo --branch $branch --manual-integration
-
-echo "Deploying local src"
-#az webapp deploy --resource-group <group-name> --name <app-name> --src-path .
-az webapp deploy --resource-group web-app --name ohadc-app --src-path .
-
-#az webapp deployment source config-zip -g $resource_group -n $appName --src .
-#az webapp deployment source config-zip -g web-app -n ohadc-app --src .
-
-# az webapp deployment source config -n ohadc-app -g web-app --repo-url "https://github.com/ohad182/azureIntroduction" --branch web-app --manual-integration
+az webapp up --sku B1 --name $appName
 
 az sql server create -n $sqlServerName -g $resource_group \
             -l $location -u $sqlServerUsername -p $sqlServerPassword
@@ -49,3 +28,7 @@ az sql server firewall-rule create -g $resource_group -s $sqlServerName -n Allow
 
 connectionString="Server=tcp:$sqlServerName.database.windows.net;Database=$sqlDatabaseName;User ID=$sqlServerUsername@$sqlServerName;Password=$sqlServerPassword;Trusted_Connection=False;Encrypt=True;"
 echo "$connectionString"
+
+echo "Deploying bing"
+az deployment group create --resource-group $resource_group --template-file bing-template/template.json --parameters '@bing-template/parameters.json'
+#az deployment group create --resource-group web-app --template-file bing-template/template.json --parameters '@bing-template/parameters.json'
