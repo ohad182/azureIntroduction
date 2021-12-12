@@ -1,0 +1,1 @@
+Driver={ODBC Driver 17 for SQL Server};Server=tcp:web-app-sql-srv-ohadc.database.windows.net,1433;Database=web-app-sql-db-ohadc;Uid=db_admin;Pwd=db_Password!;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;

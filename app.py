@@ -1,3 +1,4 @@
+import os
 import requests
 import pyodbc
 from flask import Flask, render_template_string, request
@@ -5,7 +6,7 @@ from flask import Flask, render_template_string, request
 app = Flask(__name__)
 
 table_name = "SearchTerms"
-bing_subscription_key = "d851a9e5ade844d18a2c7dd548b53a45"
+bing_subscription_key = "c98fd92df8734e55b40935bd623da123"
 bing_search_url = "https://api.bing.microsoft.com/v7.0/search"
 
 template_string = """
@@ -24,7 +25,7 @@ template_string = """
 </form>
 
 {% if search_link %}
-    <a href="{{ search_link }}" target="_blank">Open on Instagram</a>
+    <a href="{{ search_link }}" target="_blank">Open {{ current_search }} profile on Instagram</a>
 {% endif %}
 
 <h1>Recent search terms:</h1>
@@ -38,8 +39,14 @@ template_string = """
 
 
 def get_database_connection_string():
-    # return "DRIVER={ODBC Driver 13 for SQL Server};Server=tcp:web-app-sql-srv-ohadc.database.windows.net;Database=web-app-sql-db-ohadc;User ID=db_admin@web-app-sql-srv-ohadc;Password=db_Password!;Trusted_Connection=False;Encrypt=True;"
-    return "Driver={ODBC Driver 17 for SQL Server};Server=tcp:web-app-sql-srv-ohadc.database.windows.net,1433;Database=web-app-sql-db-ohadc;Uid=db_admin;Pwd=db_Password!;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+    try:
+        cs_path = "{}{}{}".format(os.path.dirname(os.path.abspath(__file__)), os.path.sep, "connection_string.txt")
+        with open(cs_path, "r") as csf:
+            cs = csf.read()
+    except Exception as e:
+        print(str(e))
+        cs = "Driver={ODBC Driver 17 for SQL Server};Server=tcp:web-app-sql-srv-ohadc.database.windows.net,1433;Database=web-app-sql-db-ohadc;Uid=db_admin;Pwd=db_Password!;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+    return cs
 
 
 def get_connection():
@@ -138,10 +145,9 @@ def search():
 @app.route("/")
 def hello():
     return render_template_string(template_string, current_search="", search_terms=get_recent_search_terms())
-    # return "Hello, World!"
 
 
 create_table()
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=80)
