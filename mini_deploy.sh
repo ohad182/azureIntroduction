@@ -38,11 +38,10 @@ az sql server firewall-rule create -g $resource_group -s $sqlServerName -n Allow
 echo "Configuring firewall..."
 az sql server firewall-rule create -g $resource_group -s $sqlServerName -n AllowWebAppDemo --start-ip-address 192.168.1.0 --end-ip-address 192.168.1.255
 
-
 echo "Creating the web app..."
 az webapp up --sku B1 --name $appName
 
-az webapp show -n $appName -g $resource_group --query "outboundIpAddresses" -o tsv
+#az webapp show -n $appName -g $resource_group --query "outboundIpAddresses" -o tsv
 
 #echo "Deploying bing"
 #az deployment group create --resource-group $resource_group --template-file bing-template/template.json --parameters '@bing-template/parameters.json'
