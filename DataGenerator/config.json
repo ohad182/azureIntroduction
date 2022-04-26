@@ -1,0 +1,8 @@
+{
+  "server": "sql-srv-azcli.database.windows.net\n",
+  "database": "sql-db-azcli",
+  "table": "MachineScoreEvents",
+  "username": "db_admin",
+  "password": "db_Password!",
+  "driver": "{ODBC Driver 17 for SQL Server}"
+}

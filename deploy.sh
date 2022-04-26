@@ -30,7 +30,7 @@ echo "Creating $database on $server..."
 az sql db create --resource-group $resource_group --server $server --name $database --edition GeneralPurpose --family Gen5 --capacity 2 
 
 echo "Creating storage account..."
-az storage account create -–name azcli-storage --resource-group $resource_group --location "$location" --sku Standard_ZRS --encryption-services blob
+az storage account create --name azcli-ohadc-storage --resource-group $resource_group --location "$location" --sku Standard_ZRS --encryption-services blob
 
 # create deployment 
 echo "Deploying..."
